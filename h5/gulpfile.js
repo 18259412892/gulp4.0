@@ -21,7 +21,7 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     pngquant = require('imagemin-pngquant'),
     tmtsprite = require('gulp-tmtsprite'),
-    vx = require("postcss-px-to-viewport"),
+    // vx = require("postcss-px-to-viewport"),
     filter = require('gulp-filter'),
     px2rem = require('gulp-px3rem'),
     proxyMiddleware = require('http-proxy-middleware'),
@@ -121,9 +121,9 @@ function compileSass() {
 	  replace: true,
 	  exclude: []
 	}
-    var processors = [
-        vx(attr)
-    ];
+    // var processors = [
+    //     vx(attr)
+    // ];
 
     return gulp.src('src/**/*.scss')
         .pipe(plumber())
@@ -212,6 +212,7 @@ function compileJs(cb, file) {
     var destTarget = file ? path.dirname(file).replace('src', 'dist') : paths.dist.dir,
         jsFilter = filter('**/page-*.js', { restore: true })
     return gulp.src('src/**/*.js')
+        
         // .pipe(jsFilter)
         // .pipe(seajsCombo({
         //     ignore: ['jquery', 'bootstrap', 'bootstrap.min']
@@ -224,7 +225,12 @@ function compileJs(cb, file) {
         // }))
         .pipe(plumber())
         // .pipe(babel())
+        .pipe(babel({
+            presets: ['@babel/env'],
+            plugins: ['@babel/plugin-transform-runtime']
+        }))
         .pipe(uglify())
+        
         .pipe(gulp.dest(destTarget))
         .on('end', reloadHandler);;
 }

@@ -21,7 +21,9 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     pngquant = require('imagemin-pngquant'),
     tmtsprite = require('gulp-tmtsprite'),
+    vx = require("postcss-px-to-viewport"),
     filter = require('gulp-filter'),
+    px2rem = require('gulp-px3rem'),
     proxyMiddleware = require('http-proxy-middleware'),
     // seajsCombo = require('gulp-seajs-combo'),
     babel = require('gulp-babel');
@@ -105,9 +107,36 @@ function copyMedia() {
  * @return {[type]} [description]
  */
 function compileSass() {
+    // 需要配置的参数
+	let attr = {
+	  unitToConvert: 'px',  // 要转换的单位，默认情况下是px
+	  viewportWidth: 750, // 视口的宽度
+	  unitPrecision: 5, 
+	  propList: ['*'],
+	  viewportUnit: 'vw',
+	  fontViewportUnit: 'vw',
+	  selectorBlackList: [],
+	  minPixelValue: 1,
+	  mediaQuery: false,
+	  replace: true,
+	  exclude: []
+	}
+    var processors = [
+        vx(attr)
+    ];
+
     return gulp.src('src/**/*.scss')
         .pipe(plumber())
         .pipe(sass())
+        .pipe(px2rem({
+            path:'',
+            baseDpr: 2,             // base device pixel ratio (default: 2)
+            threeVersion: false,    // whether to generate @1x, @2x and @3x version (default: false)
+            remVersion: true,       // whether to generate rem version (default: true)
+            remUnit: 75,            // rem unit value (default: 75)
+            remPrecision: 6         // rem precision (default: 6)
+          }))
+        // .pipe(postcss(processors))
         .pipe(gulp.dest('dist/'))
         .on('end', reloadHandler);
 }
@@ -243,7 +272,7 @@ function iconFont(cb, file){
 function startServer(cb) {
     bs.init({
         server: serverConfig,
-        port: config['livereload']['port'] || 8089,
+        port: config['livereload']['port'] || 8091,
         // startPath: config['livereload']['startPath'] || '/',
         open:false,
         reloadDelay: 0,

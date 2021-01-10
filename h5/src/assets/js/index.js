@@ -1,3 +1,3 @@
-const a = ()=>{
-    console.log(2)
+const a = function(){
+    
 }

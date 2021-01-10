@@ -108,22 +108,6 @@ function copyMedia() {
  */
 function compileSass() {
     // 需要配置的参数
-	let attr = {
-	  unitToConvert: 'px',  // 要转换的单位，默认情况下是px
-	  viewportWidth: 750, // 视口的宽度
-	  unitPrecision: 5, 
-	  propList: ['*'],
-	  viewportUnit: 'vw',
-	  fontViewportUnit: 'vw',
-	  selectorBlackList: [],
-	  minPixelValue: 1,
-	  mediaQuery: false,
-	  replace: true,
-	  exclude: []
-	}
-    // var processors = [
-    //     vx(attr)
-    // ];
 
     return gulp.src('src/**/*.scss')
         .pipe(plumber())
@@ -138,19 +122,6 @@ function compileSass() {
           }))
         // .pipe(postcss(processors))
         .pipe(gulp.dest('dist/'))
-        .on('end', reloadHandler);
-}
-function compileSprite() {
-    return gulp.src('src/**/*.css')
-        .pipe(lazyImageCSS({ imagePath: lazyDir }))
-        .pipe(tmtsprite({ slicePath: '../slice', margin: 4 }))
-        .pipe(gulpif('*.png', gulp.dest(paths.dist.sprite), gulp.dest(paths.dist.css)))
-        .on('end', reloadHandler);
-}
-
-function compileCss() {
-    return gulp.src('src/**/*.css')
-        .pipe(gulp.dest(paths.dist.dir))
         .on('end', reloadHandler);
 }
 /**
@@ -183,6 +154,7 @@ function miniCSS(cb, file) {
         .on('end', reloadHandler);;
 }
 
+ 
 /**
  * [imageminImg 图片压缩]
  * @return {[type]} [description]
@@ -225,10 +197,10 @@ function compileJs(cb, file) {
         // }))
         .pipe(plumber())
         // .pipe(babel())
-        .pipe(babel({
-            presets: ['@babel/env'],
-            plugins: ['@babel/plugin-transform-runtime']
-        }))
+        // .pipe(babel({
+        //     presets: ['@babel/env'],
+        //     plugins: ['@babel/plugin-transform-runtime']
+        // }))
         .pipe(uglify())
         
         .pipe(gulp.dest(destTarget))
@@ -432,6 +404,7 @@ gulp.task('default', gulp.series(
     ),
     compileAutoprefixer,
     miniCSS,
+    
     compileHtml,
     watch,
     startServer

@@ -107,7 +107,9 @@ function copyMedia() {
 function compileSass() {
     return gulp.src('src/**/*.scss')
         .pipe(plumber())
-        .pipe(sass())
+        .pipe(sass({
+            outputStyle: 'expanded' //compact
+        }))
         .pipe(gulp.dest('dist/'))
         .on('end', reloadHandler);
 }
